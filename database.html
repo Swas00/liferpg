@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFE RPG // Hall of Achievements & Character Dossier</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            overflow-y: auto !important;
+            background: #020408 !important;
+        }
+        body.light-theme {
+            background: #f5f9fb !important;
+            color: #0f172a !important;
+        }
+        body.light-theme .console-header {
+            border-bottom: 1px solid rgba(203, 213, 225, 0.9) !important;
+        }
+        body.light-theme .console-title h1 {
+            color: #0f172a !important;
+        }
+        body.light-theme .console-title p {
+            color: #64748b !important;
+        }
+        body.light-theme .metric-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(203, 213, 225, 0.95) !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+        }
+        body.light-theme .metric-info .m-label {
+            color: #64748b !important;
+        }
+        body.light-theme .metric-info .m-val {
+            color: #0f172a !important;
+        }
+        body.light-theme .console-tab {
+            background: rgba(248, 250, 252, 0.95) !important;
+            border: 1px solid rgba(203, 213, 225, 0.9) !important;
+            color: #64748b !important;
+            box-shadow: none !important;
+        }
+        body.light-theme .console-tab.active,
+        body.light-theme .console-tab:hover {
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 2px 10px rgba(2, 132, 199, 0.25) !important;
+        }
+        body.light-theme .records-viewport {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(203, 213, 225, 0.95) !important;
+            box-shadow: 0 12px 35px rgba(15, 23, 42, 0.07) !important;
+        }
+        body.light-theme .view-top-left h2 {
+            color: #0f172a !important;
+        }
+        body.light-theme .view-top-left p {
+            color: #64748b !important;
+        }
+        body.light-theme .table-responsive {
+            border: 1px solid rgba(203, 213, 225, 0.9) !important;
+            background: #ffffff !important;
+        }
+        body.light-theme .records-table th {
+            background: #f1f5f9 !important;
+            color: #475569 !important;
+            border-bottom: 2px solid #cbd5e1 !important;
+        }
+        body.light-theme .records-table td {
+            border-bottom: 1px solid #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+        body.light-theme .records-table tr:hover td {
+            background: rgba(2, 132, 199, 0.04) !important;
+        }
+        body.light-theme .code-id {
+            color: #0284c7 !important;
+        }
+        body.light-theme .add-doc-card {
+            background: rgba(248, 250, 252, 0.95) !important;
+            border: 1px solid rgba(203, 213, 225, 0.9) !important;
+        }
+        body.light-theme .add-doc-title {
+            color: #0f172a !important;
+        }
+        .console-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 90px 24px 60px 24px;
+            position: relative;
+            z-index: 10;
+        }
+        .console-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+        }
+        .console-title h1 {
+            font-family: var(--font-orbitron);
+            font-size: 26px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .console-title p {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-family: var(--font-rajdhani);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .status-sync-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 230, 118, 0.12);
+            border: 1px solid var(--green);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: var(--font-orbitron);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--green);
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.25);
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--green);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Summary Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .metric-card {
+            background: rgba(6, 12, 24, 0.85);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 8px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(12px);
+        }
+        .metric-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
+            transform: translateY(-2px);
+        }
+        .metric-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .metric-icon.icon-gold { background: rgba(255, 215, 0, 0.15); color: var(--gold); border: 1px solid rgba(255, 215, 0, 0.3); }
+        .metric-icon.icon-cyan { background: rgba(0, 229, 255, 0.15); color: var(--cyan); border: 1px solid rgba(0, 229, 255, 0.3); }
+        .metric-icon.icon-purple { background: rgba(168, 85, 247, 0.15); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+        .metric-icon.icon-green { background: rgba(0, 230, 118, 0.15); color: var(--green); border: 1px solid rgba(0, 230, 118, 0.3); }
+
+        .metric-info .m-label {
+            font-family: var(--font-orbitron);
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .metric-info .m-val {
+            font-family: var(--font-orbitron);
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        /* Tabs */
+        .console-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .console-tab {
+            background: rgba(6, 12, 24, 0.9);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            color: var(--text-muted);
+            font-family: var(--font-orbitron);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 11px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .console-tab.active, .console-tab:hover {
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--cyan);
+            border-color: var(--cyan);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+        }
+
+        /* Section Viewport */
+        .records-viewport {
+            background: rgba(6, 12, 24, 0.9);
+            border: 1px solid var(--border-cyan);
+            border-radius: 8px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+        }
+        .view-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .view-top-left h2 {
+            font-family: var(--font-orbitron);
+            font-size: 17px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .view-top-left p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+        }
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            font-family: var(--font-rajdhani);
+        }
+        .records-table th {
+            background: rgba(2, 6, 14, 0.95);
+            font-family: var(--font-orbitron);
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--cyan);
+            text-align: left;
+            padding: 12px 14px;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+            white-space: nowrap;
+        }
+        .records-table td {
+            padding: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+        .records-table tr:hover td {
+            background: rgba(0, 229, 255, 0.04);
+        }
+        .code-id {
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            color: #38bdf8;
+        }
+        .badge-tag {
+            font-family: var(--font-orbitron);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+
+        /* Action Form */
+        .add-doc-card {
+            margin-top: 24px;
+            background: rgba(2, 6, 14, 0.75);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-radius: 6px;
+            padding: 20px;
+        }
+        .add-doc-title {
+            font-family: var(--font-orbitron);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        /* Responsive Design for Tablets & Phones */
+        @media (max-width: 900px) {
+            .console-container { padding: 80px 16px 40px; }
+            .console-header { flex-direction: column; gap: 14px; align-items: flex-start; }
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .console-tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; width: 100%; padding-bottom: 6px; }
+            .console-tab { white-space: nowrap; flex-shrink: 0; }
+            .records-table-container { overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch; }
+            .records-table { min-width: 580px; }
+        }
+
+        @media (max-width: 600px) {
+            #nav { padding: 0 12px; height: 58px; }
+            .nav-actions { gap: 6px; }
+            .nav-actions .hud-btn span,
+            .nav-actions a.hud-btn span { display: none; }
+            .nav-actions .hud-btn,
+            .nav-actions a.hud-btn { padding: 7px 10px; font-size: 12px; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .form-grid-3 { grid-template-columns: 1fr; }
+            .console-title h1 { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top System Nav -->
+    <header id="nav">
+        <div class="nav-left">
+            <div class="sys-badge"><i class="fa-solid fa-trophy text-gold"></i> ACHIEVEMENTS</div>
+            <h3 class="sys-title"><b>LIFE</b>RPG <span>// PROGRESSION RECORDS</span></h3>
+        </div>
+        
+        <div class="nav-actions">
+            <button id="theme-toggle-btn" class="hud-btn glow theme-btn" title="Toggle Light / Dark Mode">
+                <i class="fa-solid fa-sun text-gold" id="theme-icon"></i> <span id="theme-text">LIGHT</span>
+            </button>
+            <a href="index.html" class="hud-btn glow" style="text-decoration: none;">
+                <i class="fa-solid fa-arrow-left"></i> BACK TO DAILY HABITS
+            </a>
+            <button id="refresh-records-btn" class="hud-btn secondary" title="Fetch latest updates">
+                <i class="fa-solid fa-rotate"></i> REFRESH
+            </button>
+        </div>
+    </header>
+
+    <div class="console-container">
+        <!-- Header Banner -->
+        <div class="console-header">
+            <div class="console-title">
+                <h1><i class="fa-solid fa-award text-gold"></i> HALL OF ACHIEVEMENTS & RECORDS</h1>
+                <p>UNLOCKED MEDALS, CHARACTER DOSSIER, ATTRIBUTES, AND LIFETIME HABIT LOGS</p>
+            </div>
+            <div class="status-sync-pill">
+                <span class="live-dot"></span>
+                <span>CLOUD SYNCED</span>
+            </div>
+        </div>
+
+        <!-- High-level Metrics Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon icon-gold"><i class="fa-solid fa-trophy"></i></div>
+                <div class="metric-info">
+                    <div class="m-label">ACHIEVEMENTS UNLOCKED</div>
+                    <div class="m-val" id="top-metric-achievements">2</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon icon-cyan"><i class="fa-solid fa-fire"></i></div>
+                <div class="metric-info">
+                    <div class="m-label">CURRENT HABIT STREAK</div>
+                    <div class="m-val" id="top-metric-streak">7 DAYS</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon icon-purple"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="metric-info">
+                    <div class="m-label">HABITS COMPLETED</div>
+                    <div class="m-val" id="top-metric-completions">2</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon icon-green"><i class="fa-solid fa-box-open"></i></div>
+                <div class="metric-info">
+                    <div class="m-label">INVENTORY REWARDS</div>
+                    <div class="m-val" id="top-metric-inventory">3 ITEMS</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="console-tabs">
+            <button class="console-tab active" data-tab="Achievements"><i class="fa-solid fa-trophy"></i> Achievements</button>
+            <button class="console-tab" data-tab="Users"><i class="fa-solid fa-user"></i> User Profile</button>
+            <button class="console-tab" data-tab="Stats"><i class="fa-solid fa-chart-simple"></i> Character Stats</button>
+            <button class="console-tab" data-tab="Quest_Completions"><i class="fa-solid fa-clock-rotate-left"></i> Completion History</button>
+            <button class="console-tab" data-tab="Inventory"><i class="fa-solid fa-box-open"></i> Unlocked Inventory</button>
+            <button class="console-tab" data-tab="Quests"><i class="fa-solid fa-list-check"></i> Daily Quests Directory</button>
+        </div>
+
+        <!-- Section Content Viewport -->
+        <div class="records-viewport" id="records-viewport-container">
+            <!-- Rendered dynamically by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Floating Toast Container -->
+    <div id="toast-container"></div>
+
+    <script>
+        let serverData = null;
+        let currentTab = "Achievements";
+
+        async function fetchRecords() {
+            try {
+                const res = await fetch("/api/mongo/all");
+                const json = await res.json();
+                if (json.success) {
+                    serverData = json.collections;
+                    updateTopMetrics();
+                    renderCurrentTab();
+                    showToast("RECORDS SYNCED", "All achievements and profile data updated.", "success");
+                }
+            } catch (err) {
+                console.error("Failed to fetch records:", err);
+                showToast("SYNC ERROR", "Could not synchronize records.", "warning");
+            }
+        }
+
+        function updateTopMetrics() {
+            if (!serverData) return;
+            const achCount = (serverData.Achievements || []).length;
+            const compCount = (serverData.Quest_Completions || []).length;
+            const invCount = (serverData.Inventory || []).length;
+            const user = (serverData.Users || [])[0] || {};
+
+            document.getElementById("top-metric-achievements").textContent = achCount;
+            document.getElementById("top-metric-streak").textContent = `${user.streak || 7} DAYS`;
+            document.getElementById("top-metric-completions").textContent = compCount;
+            document.getElementById("top-metric-inventory").textContent = `${invCount} ITEMS`;
+        }
+
+        function renderCurrentTab() {
+            const container = document.getElementById("records-viewport-container");
+            if (!container || !serverData) return;
+
+            if (currentTab === "Achievements") renderAchievementsView(container);
+            else if (currentTab === "Users") renderUsersView(container);
+            else if (currentTab === "Stats") renderStatsView(container);
+            else if (currentTab === "Quest_Completions") renderCompletionsView(container);
+            else if (currentTab === "Inventory") renderInventoryView(container);
+            else if (currentTab === "Quests") renderQuestsView(container);
+        }
+
+        // --- 1. Achievements View ---
+        function renderAchievementsView(container) {
+            const list = serverData.Achievements || [];
+            let rows = list.map(a => `
+                <tr>
+                    <td class="code-id">${a.achievement_id}</td>
+                    <td style="color:#ffd700; font-size:15px; font-weight:700;">
+                        <i class="fa-solid fa-award" style="margin-right:8px;"></i>${escapeHtml(a.title)}
+                    </td>
+                    <td style="font-size:13px; color:#cbd5e1;">${escapeHtml(a.description || "Milestone unlocked.")}</td>
+                    <td style="font-size:12px; color:var(--text-muted);">${a.unlocked_at ? a.unlocked_at.replace("T", " ").slice(0, 19) : "Unlocked"}</td>
+                </tr>
+            `).join("");
+
+            container.innerHTML = `
+                <div class="view-top">
+                    <div class="view-top-left">
+                        <h2><i class="fa-solid fa-trophy text-gold"></i> Unlocked Achievements & Milestones</h2>
+                        <p>Special recognition awarded for maintaining consistent daily habits and reaching milestones.</p>
+                    </div>
+                    <span class="db-badge"><i class="fa-solid fa-award text-gold"></i> ${list.length} UNLOCKED</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>ACHIEVEMENT_ID</th>
+                                <th>TITLE</th>
+                                <th>DESCRIPTION</th>
+                                <th>UNLOCKED_DATE</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // --- 2. User Profile View ---
+        function renderUsersView(container) {
+            const list = serverData.Users || [];
+            let rows = list.map(u => `
+                <tr>
+                    <td class="code-id">${u.user_id}</td>
+                    <td style="color:#fff; font-weight:700; font-size:15px;">${escapeHtml(u.username)}</td>
+                    <td style="color:#94a3b8;">${escapeHtml(u.email)}</td>
+                    <td><span class="badge-tag rank-Hard">LEVEL ${u.level}</span></td>
+                    <td class="text-cyan">${u.total_xp} XP</td>
+                    <td class="text-gold">${u.gold || 0} G</td>
+                </tr>
+            `).join("");
+
+            container.innerHTML = `
+                <div class="view-top">
+                    <div class="view-top-left">
+                        <h2><i class="fa-solid fa-user text-cyan"></i> User Profile & Character Dossier</h2>
+                        <p>Core account information, progression level, and cumulative experience points.</p>
+                    </div>
+                    <span class="db-badge"><i class="fa-solid fa-id-badge text-cyan"></i> ACTIVE</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>USER_ID</th>
+                                <th>PLAYER_NAME</th>
+                                <th>EMAIL</th>
+                                <th>LEVEL</th>
+                                <th>TOTAL_XP</th>
+                                <th>COINS</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // --- 3. Character Stats View ---
+        function renderStatsView(container) {
+            const list = serverData.Stats || [];
+            let rows = list.map(s => `
+                <tr>
+                    <td class="code-id">${s.user_id}</td>
+                    <td class="text-crimson" style="font-size:16px; font-weight:700;"><i class="fa-solid fa-dumbbell"></i> ${s.strength}</td>
+                    <td class="text-purple" style="font-size:16px; font-weight:700;"><i class="fa-solid fa-brain"></i> ${s.intelligence}</td>
+                    <td class="text-green" style="font-size:16px; font-weight:700;"><i class="fa-solid fa-heart-pulse"></i> ${s.vitality}</td>
+                    <td class="text-gold" style="font-size:16px; font-weight:700;"><i class="fa-solid fa-award"></i> ${s.discipline}</td>
+                </tr>
+            `).join("");
+
+            container.innerHTML = `
+                <div class="view-top">
+                    <div class="view-top-left">
+                        <h2><i class="fa-solid fa-chart-simple text-purple"></i> Real-Life Character Attributes</h2>
+                        <p>Track your physical fitness, intellect, physiological vitality, and daily habit discipline.</p>
+                    </div>
+                    <span class="db-badge"><i class="fa-solid fa-bolt text-cyan"></i> LIVE ATTRIBUTES</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>USER_ID</th>
+                                <th>STRENGTH (GYM & FITNESS)</th>
+                                <th>INTELLIGENCE (STUDY & CODE)</th>
+                                <th>VITALITY (SLEEP & HEALTH)</th>
+                                <th>DISCIPLINE (HABIT CONSISTENCY)</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // --- 4. Completion History View ---
+        function renderCompletionsView(container) {
+            const list = serverData.Quest_Completions || [];
+            let rows = list.map(c => `
+                <tr>
+                    <td class="code-id">${c.completion_id}</td>
+                    <td style="color:#fff; font-weight:700;">${escapeHtml(c.quest_title || "Daily Routine Habit")}</td>
+                    <td class="code-id">${c.quest_id}</td>
+                    <td class="text-cyan">+${c.xp_earned} XP</td>
+                    <td class="text-gold">+${c.gold_earned || 30} G</td>
+                    <td style="font-size:12px; color:var(--text-muted);">${c.completed_at ? c.completed_at.replace("T", " ").slice(0, 19) : ""}</td>
+                </tr>
+            `).join("");
+
+            container.innerHTML = `
+                <div class="view-top">
+                    <div class="view-top-left">
+                        <h2><i class="fa-solid fa-clock-rotate-left text-gold"></i> Habit Completion History Log</h2>
+                        <p>Complete historical log of all real-life routines verified and completed.</p>
+                    </div>
+                    <span class="db-badge"><i class="fa-solid fa-circle-check text-green"></i> ${list.length} VERIFIED</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>LOG_ID</th>
+                                <th>HABIT_TITLE</th>
+                                <th>QUEST_ID</th>
+                                <th>XP_EARNED</th>
+                                <th>COINS_EARNED</th>
+                                <th>COMPLETED_DATE</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // --- 5. Inventory View ---
+        function renderInventoryView(container) {
+            const list = serverData.Inventory || [];
+            let rows = list.map(i => `
+                <tr>
+                    <td class="code-id">${i.inventory_id}</td>
+                    <td style="color:#fff; font-weight:700;">
+                        <i class="fa-solid ${i.icon || 'fa-gift'} text-gold" style="margin-right:8px;"></i>${escapeHtml(i.item_name || i.item_id)}
+                    </td>
+                    <td><span class="badge-tag rank-Hard" style="font-size:11px;">QUANTITY: ${i.quantity}</span></td>
+                    <td style="font-size:13px; color:var(--text-muted);">${escapeHtml(i.description || "")}</td>
+                </tr>
+            `).join("");
+
+            container.innerHTML = `
+                <div class="view-top">
+                    <div class="view-top-left">
+                        <h2><i class="fa-solid fa-box-open text-cyan"></i> Unlocked Inventory & Relics</h2>
+                        <p>Lifestyle rewards, focus talismans, and streak shields purchased with habit coins.</p>
+                    </div>
+                    <span class="db-badge"><i class="fa-solid fa-gem text-gold"></i> ${list.length} ITEMS</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>ITEM_ID</th>
+                                <th>REWARD_NAME</th>
+                                <th>QUANTITY</th>
+                                <th>EFFECT / DESCRIPTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // --- 6. Quests Directory View ---
+        function renderQuestsView(container) {
+            const list = serverData.Quests || [];
+            let rows = list.map(q => `
+                <tr>
+                    <td class="code-id">${q.quest_id}</td>
+                    <td style="color:#fff; font-weight:700;">${escapeHtml(q.title)}</td>
+                    <td style="font-size:13px; color:var(--text-muted);">${escapeHtml(q.description || "")}</td>
+                    <td><span class="badge-tag rank-Medium">${q.category || "General"}</span></td>
+                    <td><span class="badge-tag rank-${q.difficulty || "Medium"}">${q.difficulty}</span></td>
+                    <td class="text-cyan">+${q.xp_reward} XP</td>
+                    <td>
+                        <button class="hud-btn small-btn" style="border-color:var(--crimson); color:var(--crimson);" onclick="deleteQuest('${q.quest_id}')">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
+
+            container.innerHTML = `
+                <div class="view-top">
+                    <div class="view-top-left">
+                        <h2><i class="fa-solid fa-list-check text-green"></i> Daily Habits & Quests Directory</h2>
+                        <p>Configured daily tasks that award XP, Coins, and Attribute points upon completion.</p>
+                    </div>
+                    <span class="db-badge"><i class="fa-solid fa-list-check text-cyan"></i> ${list.length} ACTIVE</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>QUEST_ID</th>
+                                <th>HABIT_TITLE</th>
+                                <th>DESCRIPTION</th>
+                                <th>CATEGORY</th>
+                                <th>DIFFICULTY</th>
+                                <th>XP_REWARD</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+
+                <!-- Add New Habit Form -->
+                <div class="add-doc-card">
+                    <div class="add-doc-title"><i class="fa-solid fa-plus-circle"></i> CREATE NEW DAILY HABIT QUEST</div>
+                    <form id="add-quest-form">
+                        <div class="form-grid-3">
+                            <div class="form-group">
+                                <label>HABIT TITLE</label>
+                                <input type="text" id="mq-title" placeholder="e.g. Master Clean Architecture (1 Hour)" required>
+                            </div>
+                            <div class="form-group">
+                                <label>CATEGORY</label>
+                                <select id="mq-category">
+                                    <option value="Fitness">Fitness (Strength / Cardio)</option>
+                                    <option value="Study">Study (Coding / Reading)</option>
+                                    <option value="Health">Health (Sleep / Nutrition)</option>
+                                    <option value="Mindset">Mindset (Focus / Meditation)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>DIFFICULTY & REWARD</label>
+                                <select id="mq-difficulty">
+                                    <option value="Easy">Easy (+30 XP)</option>
+                                    <option value="Medium" selected>Medium (+50 XP)</option>
+                                    <option value="Hard">Hard (+80 XP)</option>
+                                    <option value="Epic">Epic (+150 XP)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:14px;">
+                            <label>DESCRIPTION</label>
+                            <input type="text" id="mq-desc" placeholder="Actionable criteria required to clear this habit">
+                        </div>
+                        <button type="submit" class="hud-btn primary glow">
+                            <i class="fa-solid fa-plus"></i> ADD TO DAILY HABITS
+                        </button>
+                    </form>
+                </div>
+            `;
+
+            document.getElementById("add-quest-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const title = document.getElementById("mq-title").value.trim();
+                const category = document.getElementById("mq-category").value;
+                const difficulty = document.getElementById("mq-difficulty").value;
+                const desc = document.getElementById("mq-desc").value.trim();
+
+                const res = await fetch("/api/mongo/quests", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ title, category, difficulty, description: desc })
+                });
+                if (res.ok) {
+                    showToast("HABIT ADDED", `Added "${title}" to your active habits!`, "success");
+                    fetchRecords();
+                }
+            });
+        }
+
+        async function deleteQuest(questId) {
+            if (!confirm(`Delete Quest #${questId}?`)) return;
+            const res = await fetch(`/api/mongo/quests/${questId}`, { method: "DELETE" });
+            if (res.ok) {
+                showToast("HABIT REMOVED", `Quest #${questId} removed.`, "warning");
+                fetchRecords();
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
+        function showToast(title, subtitle, type = "cyan") {
+            const container = document.getElementById("toast-container");
+            if (!container) return;
+            const toast = document.createElement("div");
+            toast.className = `rpg-toast toast-${type}`;
+            toast.innerHTML = `
+                <i class="fa-solid fa-circle-check"></i>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-sub">${subtitle}</div>
+                </div>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 3000);
+        }
+
+        // Tab Switching
+        document.querySelectorAll(".console-tab").forEach(tab => {
+            tab.addEventListener("click", () => {
+                document.querySelectorAll(".console-tab").forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
+                currentTab = tab.dataset.tab;
+                renderCurrentTab();
+            });
+        });
+
+        // Theme Toggle
+        function applyDatabaseTheme(theme) {
+            const icon = document.getElementById("theme-icon");
+            const text = document.getElementById("theme-text");
+            if (theme === "light") {
+                document.body.classList.add("light-theme");
+                localStorage.setItem("LIFE_RPG_THEME", "light");
+                if (icon) icon.className = "fa-solid fa-moon text-cyan";
+                if (text) text.textContent = "DARK";
+            } else {
+                document.body.classList.remove("light-theme");
+                localStorage.setItem("LIFE_RPG_THEME", "dark");
+                if (icon) icon.className = "fa-solid fa-sun text-gold";
+                if (text) text.textContent = "LIGHT";
+            }
+        }
+        applyDatabaseTheme(localStorage.getItem("LIFE_RPG_THEME") || "dark");
+        const themeToggleBtn = document.getElementById("theme-toggle-btn");
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener("click", () => {
+                const isLight = document.body.classList.contains("light-theme");
+                applyDatabaseTheme(isLight ? "dark" : "light");
+            });
+        }
+
+        // Controls
+        document.getElementById("refresh-records-btn").addEventListener("click", fetchRecords);
+
+        fetchRecords();
+    </script>
+    <!-- Custom Classy RPG Cursor -->
+    <script src="cursor.js"></script>
+</body>
+</html>

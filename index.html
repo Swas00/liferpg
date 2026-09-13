@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFE RPG // Gamify Your Daily Real-Life Habits</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- FIXED PERMANENT CENTER CANVAS FOR 240-FRAME CHARACTER SCROLL-ANIMATION -->
+    <canvas id="rpg-canvas"></canvas>
+
+    <!-- Floating XP & Gold Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Top System Nav HUD -->
+    <header id="nav">
+        <div class="nav-left">
+            <div class="sys-badge"><i class="fa-solid fa-gamepad"></i> LIFE RPG</div>
+            <h3 class="sys-title"><b>LIFE</b>RPG <span>// HABIT ENGINE</span></h3>
+        </div>
+        
+        <div class="nav-stats">
+            <div class="stat-pill rank-pill" id="nav-rank-badge">
+                <span class="pill-label">TIER</span>
+                <span class="pill-val" id="nav-rank">BRONZE</span>
+            </div>
+            <div class="stat-pill level-pill">
+                <span class="pill-label">LVL</span>
+                <span class="pill-val" id="nav-level">1</span>
+            </div>
+            <div class="stat-pill gold-pill">
+                <i class="fa-solid fa-coins text-gold"></i>
+                <span class="pill-val" id="nav-gold">250 G</span>
+            </div>
+            <div class="stat-pill streak-pill">
+                <i class="fa-solid fa-fire text-flame"></i>
+                <span class="pill-val" id="nav-streak">7 DAYS</span>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <button id="theme-toggle-btn" class="hud-btn glow theme-btn" title="Toggle Light / Dark Mode">
+                <i class="fa-solid fa-sun text-gold" id="theme-icon"></i> <span id="theme-text">LIGHT</span>
+            </button>
+            <a href="database.html" class="hud-btn glow" style="text-decoration: none;" title="View Unlocked Achievements & Character Dossier">
+                <i class="fa-solid fa-trophy text-gold"></i> ACHIEVEMENTS
+            </a>
+            <button id="audio-toggle-btn" class="icon-btn" title="Toggle Sound Feedback">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+            <button id="profile-auth-btn" class="hud-btn secondary">
+                <i class="fa-solid fa-user-check"></i> <span id="profile-btn-text">MY PROFILE</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Scrollable Content Container -->
+    <div id="main">
+        <!-- PAGE 0: Hero & Habit Awakening -->
+        <section id="page" class="rpg-section">
+            <div id="loop">
+                <h1><b>LIFE RPG:</b> GAMIFY YOUR <span>DAILY HABITS.</span></h1>
+                <h1>LEVEL UP YOUR <b>REAL LIFE</b> THROUGH <span>TANGIBLE PROGRESSION.</span></h1>
+                <h1><b>BUILD STREAKS:</b> WORKOUT, STUDY, READ & <span>UNLOCK REWARDS.</span></h1>
+            </div>
+
+            <div class="section-columns">
+                <!-- Left HUD -->
+                <div class="col-left">
+                    <div class="sys-window alert-card">
+                        <div class="alert-tag"><i class="fa-solid fa-bullseye"></i> REAL-LIFE HABIT PROTOCOL</div>
+                        <h2>TURN DAILY CHORES INTO EPIC RPG PROGRESSION</h2>
+                        <p>Traditional habit trackers feel boring and tedious. Life RPG bridges the delayed gratification gap by giving you immediate XP, Level Ups, and tangible rewards for completing workouts, studying, and mindful routines.</p>
+                        
+                        <div class="hero-cta-group">
+                            <button class="hud-btn glow" id="hero-today-habits-btn">
+                                <i class="fa-solid fa-list-check"></i> TODAY'S HABITS
+                            </button>
+                            <button class="hud-btn secondary" id="hero-view-attr-btn">
+                                <i class="fa-solid fa-chart-simple"></i> VIEW ATTRIBUTES
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Spacer: 100% open for character animation -->
+                <div class="col-center-spacer"></div>
+
+                <!-- Right HUD -->
+                <div class="col-right">
+                    <div class="sys-window quick-overview-card">
+                        <div class="window-header">
+                            <div class="win-title"><i class="fa-solid fa-calendar-check"></i> TODAY'S ROUTINE SUMMARY</div>
+                            <span class="badge-live">ACTIVE</span>
+                        </div>
+                        <div class="q-stat-row">
+                            <span class="label">HABIT FOCUS</span>
+                            <span class="val text-cyan" id="hero-player-job">FITNESS & PRODUCTIVITY</span>
+                        </div>
+                        <div class="q-stat-row">
+                            <span class="label">TODAY'S COMPLETION</span>
+                            <span class="val text-gold" id="hero-daily-progress">60%</span>
+                        </div>
+                        <div class="q-stat-row">
+                            <span class="label">FATIGUE & STRESS</span>
+                            <span class="val text-crimson" id="hero-fatigue-val">18 / 100</span>
+                        </div>
+                        <div class="q-stat-row">
+                            <span class="label">HABIT STREAK BONUS</span>
+                            <span class="val text-flame">1.2x EXP MULTIPLIER</span>
+                        </div>
+                        <div class="scroll-instruction">
+                            <span class="pulse-dot"></span> SCROLL DOWN TO LEVEL UP ATTRIBUTES
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 1: Life Attributes & Character Stats -->
+        <section id="page1" class="rpg-section">
+            <div class="section-columns">
+                <!-- Left HUD: Real-Life Character Attributes -->
+                <div class="col-left">
+                    <div class="sys-window status-window">
+                        <div class="window-header">
+                            <div class="win-title"><i class="fa-solid fa-id-card"></i> REAL-LIFE ATTRIBUTES</div>
+                            <div class="win-controls">
+                                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                            </div>
+                        </div>
+                        <div class="hunter-profile">
+                            <div class="avatar-tag">
+                                <div class="player-title" id="profile-title">PATH: BALANCED MASTERY</div>
+                                <div class="player-name" id="profile-name">PLAYER: ALEX R.</div>
+                                <div class="player-job">PRIMARY: FITNESS & CODE</div>
+                            </div>
+                            <div class="player-rank-large" id="profile-rank-display">BRONZE</div>
+                        </div>
+
+                        <div class="bars-container">
+                            <div class="bar-group">
+                                <div class="bar-info">
+                                    <span><i class="fa-solid fa-battery-three-quarters text-green"></i> DAILY ENERGY</span>
+                                    <span id="hp-text">85 / 100</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill hp-fill" style="width: 85%;"></div></div>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar-info">
+                                    <span><i class="fa-solid fa-brain text-cyan"></i> MENTAL FOCUS</span>
+                                    <span id="mp-text">92 / 100</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill mp-fill" style="width: 92%;"></div></div>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar-info">
+                                    <span><i class="fa-solid fa-heart-pulse text-gold"></i> FATIGUE / BURNOUT</span>
+                                    <span id="fatigue-text">18 / 100</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill fatigue-fill" style="width: 18%;"></div></div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Attribute Sliders with Live '+' Boost Buttons -->
+                        <div class="attributes-grid">
+                            <div class="attr-item" data-attr="strength">
+                                <div class="attr-header">
+                                    <span class="attr-name"><i class="fa-solid fa-dumbbell text-crimson"></i> STRENGTH (GYM & WORKOUT)</span>
+                                    <div class="attr-actions">
+                                        <span class="attr-val" id="attr-strength">28</span>
+                                        <button class="stat-plus-btn" data-stat="strength" title="Boost Strength (+1 Point)">+</button>
+                                    </div>
+                                </div>
+                                <span class="attr-desc">Weightlifting, Calisthenics, Physical Training</span>
+                                <div class="attr-bar"><div class="attr-fill" id="fill-strength" style="width: 56%;"></div></div>
+                            </div>
+
+                            <div class="attr-item" data-attr="agility">
+                                <div class="attr-header">
+                                    <span class="attr-name"><i class="fa-solid fa-person-running text-cyan"></i> AGILITY (CARDIO & STEPS)</span>
+                                    <div class="attr-actions">
+                                        <span class="attr-val" id="attr-agility">24</span>
+                                        <button class="stat-plus-btn" data-stat="agility" title="Boost Agility (+1 Point)">+</button>
+                                    </div>
+                                </div>
+                                <span class="attr-desc">Morning Run, 10k Steps, Mobility, Speed</span>
+                                <div class="attr-bar"><div class="attr-fill" id="fill-agility" style="width: 48%;"></div></div>
+                            </div>
+
+                            <div class="attr-item" data-attr="intelligence">
+                                <div class="attr-header">
+                                    <span class="attr-name"><i class="fa-solid fa-laptop-code text-purple"></i> INTELLECT (STUDY & CODE)</span>
+                                    <div class="attr-actions">
+                                        <span class="attr-val" id="attr-intelligence">35</span>
+                                        <button class="stat-plus-btn" data-stat="intelligence" title="Boost Intellect (+1 Point)">+</button>
+                                    </div>
+                                </div>
+                                <span class="attr-desc">Programming, University Study, Deep Work</span>
+                                <div class="attr-bar"><div class="attr-fill" id="fill-intelligence" style="width: 70%;"></div></div>
+                            </div>
+
+                            <div class="attr-item" data-attr="vitality">
+                                <div class="attr-header">
+                                    <span class="attr-name"><i class="fa-solid fa-shield-heart text-green"></i> VITALITY (SLEEP & HEALTH)</span>
+                                    <div class="attr-actions">
+                                        <span class="attr-val" id="attr-vitality">20</span>
+                                        <button class="stat-plus-btn" data-stat="vitality" title="Boost Vitality (+1 Point)">+</button>
+                                    </div>
+                                </div>
+                                <span class="attr-desc">8h Sleep, Clean Nutrition, 3L Hydration</span>
+                                <div class="attr-bar"><div class="attr-fill" id="fill-vitality" style="width: 40%;"></div></div>
+                            </div>
+
+                            <div class="attr-item" data-attr="discipline">
+                                <div class="attr-header">
+                                    <span class="attr-name"><i class="fa-solid fa-award text-gold"></i> DISCIPLINE (HABITS & CONSISTENCY)</span>
+                                    <div class="attr-actions">
+                                        <span class="attr-val" id="attr-discipline">26</span>
+                                        <button class="stat-plus-btn" data-stat="discipline" title="Boost Discipline (+1 Point)">+</button>
+                                    </div>
+                                </div>
+                                <span class="attr-desc">Daily Habits Streak, Meditation, Focus & Willpower</span>
+                                <div class="attr-bar"><div class="attr-fill" id="fill-discipline" style="width: 52%;"></div></div>
+                            </div>
+                        </div>
+
+                        <div class="stat-points-card">
+                            <div>
+                                <span class="label">UNASSIGNED ATTRIBUTE POINTS</span>
+                                <span class="points-val" id="unassigned-pts">3</span>
+                            </div>
+                            <button class="hud-btn small-btn" id="allocate-pts-btn">AUTO ALLOCATE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Spacer: 100% open for character animation -->
+                <div class="col-center-spacer"></div>
+
+                <!-- Right HUD: Progression Engine -->
+                <div class="col-right">
+                    <div class="sys-window level-progression-window">
+                        <div class="window-header">
+                            <div class="win-title"><i class="fa-solid fa-chart-line"></i> PROGRESSION ENGINE</div>
+                        </div>
+
+                        <div class="level-showcase">
+                            <div class="level-circle">
+                                <span class="lvl-tag">LVL</span>
+                                <span class="lvl-num" id="hud-level-num">1</span>
+                            </div>
+                            <div class="level-meta">
+                                <div class="meta-row">
+                                    <span class="title">EXP PROGRESS</span>
+                                    <span class="val" id="xp-counter">65 / 100 XP</span>
+                                </div>
+                                <div class="progress-track large">
+                                    <div class="progress-fill xp-fill" id="xp-progress-bar" style="width: 65%;"></div>
+                                </div>
+                                <p class="formula-caption"><i class="fa-solid fa-circle-info"></i> Non-linear leveling curve: Next level requires <b>128 XP</b></p>
+                            </div>
+                        </div>
+
+                        <div class="hunter-milestones">
+                            <div class="milestone-item">
+                                <div class="m-icon text-flame"><i class="fa-solid fa-fire"></i></div>
+                                <div class="m-text">
+                                    <span class="m-title">CONSISTENCY STREAK</span>
+                                    <span class="m-val" id="prog-streak-val">7 Days Streak (1.2x XP Buff)</span>
+                                </div>
+                            </div>
+
+                            <div class="milestone-item">
+                                <div class="m-icon text-gold"><i class="fa-solid fa-award"></i></div>
+                                <div class="m-text">
+                                    <span class="m-title">COMPLETED HABITS</span>
+                                    <span class="m-val" id="prog-quests-completed">14 Real-World Habits Done</span>
+                                </div>
+                            </div>
+
+                            <div class="milestone-item">
+                                <div class="m-icon text-cyan"><i class="fa-solid fa-trophy"></i></div>
+                                <div class="m-text">
+                                    <span class="m-title">TIER ADVANCEMENT</span>
+                                    <span class="m-val">Reach Level 5 to unlock Silver Habit Tier</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 2: Daily Habit Directory & Habit Creator -->
+        <section id="page2" class="rpg-section">
+            <div class="section-columns">
+                <!-- Left HUD: Active Habits List -->
+                <div class="col-left">
+                    <div class="sys-window quest-directory-card">
+                        <div class="window-header">
+                            <div class="win-title"><i class="fa-solid fa-list-check"></i> ACTIVE DAILY HABITS</div>
+                            <div class="filter-chips">
+                                <button class="chip active" data-filter="all">ALL</button>
+                                <button class="chip" data-filter="Fitness">FITNESS</button>
+                                <button class="chip" data-filter="Study">STUDY</button>
+                                <button class="chip" data-filter="Health">HEALTH</button>
+                            </div>
+                        </div>
+                        <div class="quest-cards-container" id="quest-list">
+                            <!-- Rendered by script.js -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Spacer: 100% open for character animation -->
+                <div class="col-center-spacer"></div>
+
+                <!-- Right HUD: Quick Habit Add -->
+                <div class="col-right">
+                    <div class="sys-window quick-quest-card">
+                        <div class="window-header">
+                            <div class="win-title"><i class="fa-solid fa-plus-circle"></i> ADD NEW HABIT</div>
+                        </div>
+                        <p class="quick-quest-desc">Add your custom daily habits (gym routine, coding project, book reading, hydration) to earn instant XP and Gold rewards upon completion.</p>
+                        
+                        <form id="inline-quest-form">
+                            <div class="form-group">
+                                <label>HABIT / TASK OBJECTIVE</label>
+                                <input type="text" id="inline-quest-title" placeholder="e.g., Read 20 pages of clean architecture" required autocomplete="off">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>CATEGORY & STAT</label>
+                                    <select id="inline-quest-attr">
+                                        <option value="Intelligence">🧠 Intellect (Coding / Study)</option>
+                                        <option value="Strength">💪 Strength (Gym / Workout)</option>
+                                        <option value="Agility">⚡ Agility (Cardio / Steps)</option>
+                                        <option value="Vitality">🛡️ Vitality (Nutrition / Sleep)</option>
+                                        <option value="Sense">👁️ Focus (Reading / Meditation)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>DIFFICULTY & REWARD</label>
+                                    <select id="inline-quest-rank">
+                                        <option value="Easy">Easy (+30 XP, +15 G)</option>
+                                        <option value="Medium" selected>Medium (+50 XP, +30 G)</option>
+                                        <option value="Hard">Hard (+80 XP, +50 G)</option>
+                                        <option value="Epic">Epic (+150 XP, +100 G)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="inline-quest-daily" checked>
+                                    <span>Recurring Daily Routine</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="hud-btn primary glow large">
+                                <i class="fa-solid fa-plus"></i> ADD TO DAILY HABITS
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Recent Habit Completion History Card -->
+                    <div class="history-audit-box">
+                        <div class="history-audit-header">
+                            <div class="history-audit-title"><i class="fa-solid fa-clock-rotate-left"></i> RECENT HABIT COMPLETIONS</div>
+                            <span class="db-badge"><i class="fa-solid fa-circle-check"></i> SYNCED</span>
+                        </div>
+                        <div class="history-list-container" id="history-log-list">
+                            <!-- Rendered dynamically by script.js -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 3: Rewards Store & Habit Inventory -->
+        <section id="page3" class="rpg-section">
+            <div class="section-columns">
+                <!-- Left HUD: Rewards Store -->
+                <div class="col-left">
+                    <div class="sys-window market-window">
+                        <div class="window-header">
+                            <div class="win-title"><i class="fa-solid fa-gift"></i> HABIT REWARDS STORE</div>
+                            <div class="gold-balance">
+                                <span>COINS:</span>
+                                <b class="text-gold" id="market-gold-display">250 G</b>
+                            </div>
+                        </div>
+                        <p class="market-intro">Redeem coins earned from checking off real-life habits for leisure rewards, coffee treats, and productivity buffs.</p>
+
+                        <div class="shop-grid" id="shop-items-container">
+                            <!-- Rendered by script.js -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Spacer: 100% open for character animation -->
+                <div class="col-center-spacer"></div>
+
+                <!-- Right HUD: Player Inventory & Streak Protocol -->
+                <div class="col-right">
+                    <div class="sys-window inventory-window">
+                        <div class="window-header">
+                            <div class="win-title"><i class="fa-solid fa-box-open"></i> UNLOCKED PERKS & REWARDS</div>
+                            <span class="slot-count" id="inventory-count">3 / 12 SLOTS</span>
+                        </div>
+
+                        <div class="inventory-grid" id="inventory-container">
+                            <!-- Rendered by script.js -->
+                        </div>
+
+                        <div class="penalty-warning-card">
+                            <div class="penalty-header text-crimson">
+                                <i class="fa-solid fa-heart-pulse"></i> STREAK PROTECTION POLICY
+                            </div>
+                            <p>Complete at least 3 daily habits every day to keep your active streak multiplier burning. Use a Streak Freeze Shield if you take a scheduled rest day.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- MODAL: User Profile & Authentication -->
+    <div class="modal-backdrop" id="auth-modal" style="display: none;">
+        <div class="sys-modal auth-modal-box">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fa-solid fa-user-gear"></i> USER ACCOUNT & PROFILE</div>
+                <button class="close-modal-btn" id="close-auth-modal">&times;</button>
+            </div>
+
+            <!-- Active User Session Info & Log Out Card -->
+            <div id="auth-logged-in-box" class="active-session-card">
+                <div class="session-user-info">
+                    <div class="session-avatar"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="session-details">
+                        <div class="session-name" id="session-username">ALEX JOHNSON</div>
+                        <div class="session-email" id="session-email">alex@productivity.life</div>
+                        <div class="session-meta">
+                            <span class="session-badge" id="session-lvl">LEVEL 1</span>
+                            <span class="session-badge text-gold" id="session-xp">65 XP</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="hud-btn danger-glow" id="logout-btn" style="width: 100%; margin-top: 14px; border-color: var(--crimson); color: #fff; background: rgba(255, 51, 102, 0.2);">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> LOG OUT OF ACCOUNT
+                </button>
+            </div>
+
+            <div class="auth-divider" id="auth-switch-divider">
+                <span>OR SWITCH / CREATE ACCOUNT</span>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab" id="tab-login-btn">LOG IN</button>
+                <button class="auth-tab active" id="tab-signup-btn">CREATE NEW ACCOUNT</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <label>USER EMAIL / USERNAME</label>
+                    <input type="text" id="login-id" placeholder="alex@productivity.io" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>PASSWORD</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <div class="form-row-auth">
+                    <button type="submit" class="hud-btn primary glow large">SIGN IN & SYNC DATA</button>
+                    <button type="button" class="hud-btn secondary small-btn" id="demo-login-btn">QUICK LOAD PROFILE (ALEX)</button>
+                </div>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="signup-form" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <label>YOUR NAME</label>
+                    <input type="text" id="signup-name" placeholder="e.g., Alex Johnson" required>
+                </div>
+                <div class="form-group">
+                    <label>PRIMARY HABIT GOAL</label>
+                    <select id="signup-job">
+                        <option value="Fitness & Wellness">Fitness & Body Transformation</option>
+                        <option value="Coding & Tech Career">Software Engineering & Tech Career</option>
+                        <option value="Academic Mastery">Student & Academic Study</option>
+                        <option value="Balanced Productivity">All-Round Life Mastery</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>EMAIL ADDRESS</label>
+                    <input type="email" id="signup-email" placeholder="user@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>CREATE PASSWORD</label>
+                    <input type="password" id="signup-password" placeholder="Minimum 6 characters" required>
+                </div>
+                <button type="submit" class="hud-btn primary glow large">CREATE LIFE RPG ACCOUNT</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Level Up Celebration -->
+    <div class="modal-backdrop celebration-backdrop" id="level-up-modal" style="display: none;">
+        <div class="sys-modal level-up-modal">
+            <div class="level-up-glow"></div>
+            <div class="sys-tag">[CELEBRATION]</div>
+            <h1 class="level-up-heading">LEVEL UP!</h1>
+            <div class="level-up-sub">YOUR DAILY HABITS HAVE EXPANDED YOUR CAPABILITIES</div>
+            <div class="level-up-badge" id="popup-new-level">LEVEL 2</div>
+
+            <div class="rewards-summary">
+                <div class="rew-item"><i class="fa-solid fa-arrow-trend-up text-cyan"></i> +1 to All Life Attributes</div>
+                <div class="rew-item"><i class="fa-solid fa-coins text-gold"></i> +100 Habit Coins Awarded</div>
+                <div class="rew-item"><i class="fa-solid fa-fire text-flame"></i> +3 Attribute Points to Allocate</div>
+            </div>
+
+            <button class="hud-btn primary glow large" id="close-level-modal-btn">CONTINUE PROGRESSION</button>
+        </div>
+    </div>
+
+    <!-- MODAL: 8-Step Quest Verification Pipeline Terminal -->
+    <div class="modal-backdrop pipeline-backdrop" id="pipeline-modal" style="display: none;">
+        <div class="sys-modal pipeline-modal-box">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fa-solid fa-shield-halved text-cyan"></i> QUEST COMPLETION VERIFICATION</div>
+                <button class="close-modal-btn" id="close-pipeline-modal">&times;</button>
+            </div>
+            <div class="pipeline-subtitle">8-STAGE PROGRESSION & ANTI-CHEAT VERIFICATION</div>
+            
+            <div class="pipeline-steps-container" id="pipeline-steps-list">
+                <!-- Rendered dynamically with step-by-step green checkmarks -->
+            </div>
+
+            <div class="pipeline-footer">
+                <span class="db-badge"><i class="fa-solid fa-circle-check text-green"></i> VERIFICATION CONFIRMED</span>
+                <button class="hud-btn glow small-btn" id="pipeline-continue-btn">DISMISS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GSAP Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+    <!-- Custom Classy RPG Cursor -->
+    <script src="cursor.js"></script>
+</body>
+</html>
